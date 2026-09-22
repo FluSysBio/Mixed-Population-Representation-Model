@@ -16,7 +16,6 @@ from .utils import find_sequence, normalize_name, seq_to_indices
 def encode_sequence_full(seq: str, encoder: HAGraphEncoder, adj: torch.Tensor,
                          graph_len: int, device: torch.device,
                          focus: int = FOCUS_POSITION) -> dict[str, np.ndarray]:
-    """Mean / focus-residue / local-window (155-165) embeddings for one HA."""
     x = torch.tensor(seq_to_indices(seq, graph_len), dtype=torch.long, device=device)[None, :]
     with torch.no_grad():
         h = encoder.encode(x, adj.to(device)).squeeze(0).cpu().numpy()
@@ -84,7 +83,7 @@ def pssm_pair_features(vseq: str, sseq: str, logodds: np.ndarray, graph_len: int
 
 
 def glycosylation_features(seq: str, graph_len: int, structure_info: dict) -> np.ndarray:
-    """6-dim N-linked sequon (N-X-S/T, X != P) descriptors relative to residue 160."""
+    """6-dim N-linked sequon descriptors relative to residue 160."""
     s = str(seq).replace("-", "").upper()[:graph_len].ljust(graph_len, "X")
     motifs = [i + 1 for i in range(graph_len - 2)
               if s[i] == "N" and s[i + 1] != "P" and s[i + 2] in ("S", "T")]
@@ -187,8 +186,8 @@ def ratio_geometry_features(weights: np.ndarray) -> np.ndarray:
 
 def train_only_context_features(train_df: pd.DataFrame, target_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Context features computed from the TRAINING split only (no label leakage):
-    distance of a query mixture to observed training mixtures, and per-serum /
+    Context features computed during the TRAINING
+    distance of a query mixture to observed training mixtures, and per-serum,
     per-virus titer summaries.
     """
     ratio_cols = ["K_fraction", "T_fraction", "I_fraction"]
