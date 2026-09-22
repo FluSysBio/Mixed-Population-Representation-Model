@@ -12,7 +12,7 @@ class MixtureEncoder(nn.Module):
     """
     Permutation-invariant DeepSets encoder over the variant set {K, T, I}:
         z = rho( sum_a  f_a * psi(a) )
-    The model therefore sees a population, not an ordered triple, so the same
+    The model therefore sees a population, order of varaints doesn't matter, so the same
     composition expressed in any variant order yields the same representation.
     """
 
@@ -33,17 +33,6 @@ class MixtureEncoder(nn.Module):
 class FeatureAssembler(nn.Module):
     """
     Assembles biology into a short token sequence.
-
-    serum_mode='index' (7 tokens, 8 with PSSM):
-        0 virus_mean   1 serum embedding   2 virus_focus   3 mixture z
-        4 virus x z    5 serum x z         6 engineered features
-        7 virus PSSM
-
-    serum_mode='sequence' (11 tokens, 13 with PSSM):
-        0 virus_mean      1 serum_mean       2 virus_focus     3 serum_focus
-        4 |v-s| at focus  5 (v+s)/2          6 mixture z       7 v x z
-        8 s x z           9 |v-s| x z       10 engineered features
-       11 virus PSSM     12 serum PSSM
     """
 
     def __init__(self, seq_dim: int, pair_dim: int, mix_hidden: int = 64,
