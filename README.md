@@ -96,9 +96,6 @@ python -m mpat predict --bundle results/model_bundle.pt \
                        --query_csv queries.csv --out_csv preds.csv
 ```
 
-The bundle carries the model ensemble, feature bank, fitted scaler, and encoder weights,
-so prediction needs no FASTA or PDB unless a query names an unseen virus. Queries naming an
-antiserum outside the training panel are rejected.
 
 ### As a library
 
@@ -117,26 +114,6 @@ shell, as in the Quickstart, or prefix each command:
 PYTHONPATH=src python -m mpat train ...
 ```
 
----
-
-## Options
-
-| Option | Default | Effect |
-|---|---|---|
-| `--n_seeds` | 5 | Ensemble size; predictions averaged across seeds |
-| `--epochs` | 400 | Maximum epochs, early stopping on validation MAE |
-| `--lr` | 3e-4 | Peak learning rate for the one-cycle schedule |
-| `--batch_size` | 16 | Minibatch size |
-| `--label_noise_std` | 0.05 | Gaussian noise on training targets only |
-| `--serum_mode` | index | `index` reads the antiserum as a panel identifier; `sequence` uses HA sequences and requires `--serum_fasta` |
-| `--split_mode` | stratified | `ratio_holdout` and `pair_holdout` are stricter |
-| `--cv` | none | `leave_one_ratio`, `leave_one_pair`, `random_grouped`, `all` |
-| `--ablation` | none | `no_mixture`, `sequence_only`, `mixture_only`, `no_sequence_embeddings`, `no_pair_features` |
-| `--cpu` | off | Force CPU execution |
-
-`python -m mpat train --help` lists the rest.
-
----
 
 ## Outputs
 
@@ -148,8 +125,6 @@ Written to `--output_dir`:
 | `predictions_*.csv` | Per-observation observed and predicted titers |
 | `split_{train,val,test}.csv` | Exact rows in each partition |
 | `model_bundle.pt` | Self-contained inference bundle |
-| `training_history.json` | Per-epoch loss and validation traces |
-| `mixture_response_grid.csv` | Predicted titer surface over the composition simplex, with the additive expectation and the non-additive residual |
 | `cross_validation/cv_summary.{csv,json}` | Pooled and per-fold CV results |
 | `cross_validation/*_predictions.csv` | Per-observation held-out predictions per protocol |
 
@@ -179,36 +154,14 @@ Configuration lives in `src/mpat/constants.py`.
 
 ---
 
-## Design notes
 
-**Censoring.** Titers below the first assay dilution are left-censored, so the loss
-penalizes over-prediction only for those observations via a one-sided Tobit-style Huber
-term. Treating them as exact values at the substituted floor would bias predictions
-downward at the detection limit.
-
-**Replicates.** Replicates are collapsed to their geometric mean titer, with replicate
-agreement supplying a measurement-quality weight, rather than being treated as independent
-observations. `--use_replicates` reinstates the replicate-level form as label-noise
-augmentation, keeping replicates within a single split.
-
-**Leakage control.** Feature scaling, imbalance weights, and all context statistics are
-computed on the training split alone and applied unchanged to validation and test.
-
-**Evaluation protocol.** The stratified 80/10/10 split is an optimistic bound, since
-related compositions appear on both sides. `leave_one_ratio` withholds an entire
-composition per fold and is the protocol matching the extrapolation claim; `leave_one_pair`
-withholds an entire virus x serum pair. Reporting the range across protocols is the
-intended usage. The final row of each `*_metrics.csv` gives the pooled result plus the
-across-fold mean, standard deviation, minimum, and maximum.
-
----
 
 ## Reproducing the manuscript results
 
 ```bash
-python -m mpat train --data data/mn_titers_collapsed_ordered.csv \
+python -m mpat train --data data/MN_Titers_Data.csv \
                      --virus_fasta data/Virus.fasta \
-                     --gisaid_fasta data/Gisaid_HA_Seq.fasta --pdb data/4WE4.pdb \
+                     --gisaid_fasta data/Public_HA_Sequence_Data.fasta --pdb data/HA_structure_template.pdb \
                      --pretrained_encoder artefacts/encoder.pt \
                      --output_dir results --n_seeds 5 --cv all --seed 42
 ```
