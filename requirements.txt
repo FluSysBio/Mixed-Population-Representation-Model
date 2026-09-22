@@ -1,0 +1,8 @@
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+biopython==1.85
+torch==2.5.1+cu121
+torchinfo==1.8.0
+
