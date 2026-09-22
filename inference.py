@@ -1,4 +1,4 @@
-"""Self-contained inference bundle and prediction entry points."""
+"""Inference bundle and prediction generation."""
 
 from __future__ import annotations
 
@@ -53,11 +53,11 @@ def save_bundle(path: Path, models, bank, scaler, encoder_state, encoder_cfg,
 class MPATPredictor:
     """
     Load a trained bundle and predict MN titers for any
-    (virus, serum, K:T:I ratio) query - including ratios never assayed.
+    (virus, serum, K:T:I ratio) query - including ratios composition.
 
         p = MPATPredictor("results/model_bundle.pt")
         p.predict("A/HK/19", "A/Kan/17", (0.4, 0.35, 0.25))
-        -> {'log2_titer': 5.12, 'titer_2fold': 32.0, 'titer_continuous': 34.8,
+        prediction result will generate:-> {'log2_titer': 5.12, 'titer_2fold': 32.0, 'titer_continuous': 34.8,
             'log2_sd_ensemble': 0.21, ...}
     """
 
