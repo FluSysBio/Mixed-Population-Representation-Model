@@ -29,7 +29,7 @@ python -m mpat train --data data/MN_Titers_Data.csv \
                      --output_dir results --n_seeds 5
 
 # 3. predict a composition that was never assayed
-python -m mpat predict --bundle results/model_bundle.pt \
+python -m mpat predict --bundle ./Models/model_bundle.pt \
                        --virus A/HK/19 --serum A/Kan/17 --ratio 40:35:25
 ```
 ---
@@ -63,7 +63,7 @@ PDB entry 4WE4. See `data/README.md`.
 python -m mpat train --data data/MN_Titers_Data.csv \
                      --virus_fasta data/Virus_Sequence.fasta \
                      --gisaid_fasta data/Public_HA_Sequence_Data.fasta --pdb data/HA_structure_template.pdb \
-                     --pretrained_encoder artefacts/encoder.pt \
+                     --pretrained_encoder Graph_Encoder.pt \
                      --output_dir results --n_seeds 5 --cv leave_one_ratio
 ```
 
@@ -74,15 +74,15 @@ generalization result; `--cv all` runs every protocol; `--cv_only` skips the fin
 
 ```bash
 # single query
-python -m mpat predict --bundle results/model_bundle.pt \
+python -m mpat predict --bundle ./Models/model_bundle.pt \
                        --virus A/HK/19 --serum A/Kan/17 --ratio 40:35:25
 
 # full composition simplex for one virus x serum pair
-python -m mpat predict --bundle results/model_bundle.pt \
+python -m mpat predict --bundle ./Models/model_bundle.pt \
                        --virus A/HK/19 --serum A/Kan/17 --simplex --grid_step 0.05
 
 # batch queries
-python -m mpat predict --bundle results/model_bundle.pt \
+python -m mpat predict --bundle ./Models/model_bundle.pt \
                        --query_csv queries.csv --out_csv preds.csv
 ```
 
@@ -92,7 +92,7 @@ python -m mpat predict --bundle results/model_bundle.pt \
 ```python
 from mpat.inference import MPATPredictor   # requires src/ on PYTHONPATH
 
-p = MPATPredictor("results/model_bundle.pt")
+p = MPATPredictor("./Models/model_bundle.pt")
 p.predict("A/HK/19", "A/Kan/17", (0.4, 0.35, 0.25))
 # {'log2_titer': 5.12, 'titer_2fold': 32.0, 'titer_continuous': 34.8, ...}
 ```
@@ -152,7 +152,7 @@ Configuration lives in `src/mpat/constants.py`.
 python -m mpat train --data data/MN_Titers_Data.csv \
                      --virus_fasta data/Virus_Sequence.fasta \
                      --gisaid_fasta data/Public_HA_Sequence_Data.fasta --pdb data/HA_structure_template.pdb \
-                     --pretrained_encoder artefacts/encoder.pt \
+                     --pretrained_encoder ./Models/Graph_Encoder.pt \
                      --output_dir results --n_seeds 5 --cv all --seed 42
 ```
 
