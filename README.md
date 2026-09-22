@@ -32,10 +32,6 @@ python -m mpat train --data data/MN_Titers_Data.csv \
 python -m mpat predict --bundle results/model_bundle.pt \
                        --virus A/HK/19 --serum A/Kan/17 --ratio 40:35:25
 ```
-
-A GPU is optional; add `--cpu` to run on CPU, where pretraining takes 30 to 60 minutes and
-training a few minutes.
-
 ---
 
 ## Inputs
