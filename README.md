@@ -2,9 +2,9 @@
 
 Machine learning–based prediction of antigenic responses from heterogeneous viral populations.
 
-**MPAT** incorporates viral population composition directly into antigenic prediction. Each observation is represented by a viral background, an antiserum, and the relative frequencies of coexisting variants at a defined residue. This allows populations containing the same variants but differing in their relative frequencies to receive distinct predicted titers.
+**MPAT** incorporates viral population composition directly into antigenic prediction. Each observation is represented by a viral background, an antiserum, and the relative frequencies of coexisting variants at a defined residue. 
 
-The framework is designed to be general with respect to the focal residue, the number and identity of coexisting variants, and the serological assay. As a proof-of-concept and foundation for the framework, the current implementation was developed and evaluated using influenza A(H3N2) hemagglutinin (HA) populations containing K, T, and I variants at residue 160 (H3 numbering) and microneutralization (MN) titers.
+The framework is designed to be general with respect to the focal residue, the number and identity of coexisting mixture variants,their composition and the serological assay. As a proof-of-concept and foundation for the framework, the current implementation was developed and evaluated using influenza A(H3N2) hemagglutinin (HA) populations containing K, T, and I variants at residue 160 (H3 numbering) and microneutralization (MN) titers.
 
 
 ---
