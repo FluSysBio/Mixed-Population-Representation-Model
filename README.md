@@ -29,7 +29,7 @@ python -m mpat pretrain --gisaid_fasta data/Public_HA_Sequence_Data.fasta --pdb 
 
 # 2. train and evaluate
 python -m mpat train --data data/MN_Titers_Data.csv \
-                     --virus_fasta data/Virus.fasta \
+                     --virus_fasta data/Virus_Sequence.fasta \
                      --gisaid_fasta data/Public_HA_Sequence_Data.fasta --pdb data/HA_structure_template.pdb \
                      --pretrained_encoder artefacts/encoder.pt \
                      --output_dir results --n_seeds 5
@@ -149,8 +149,8 @@ Configuration lives in `src/mpat/constants.py`.
 | Different focal residue or window | Set `FOCUS_POSITION` and `LOCAL_WINDOW`. Nothing else changes. |
 | Different variants, same count | Replace `MIX_AAS`; add matching `MIX_AA_PROPS` entries of length `MIX_PROP_DIM`. |
 | Different number of variants | Set `MIX_AAS`; the embedding table and DeepSets size themselves. Also edit the fraction column names in `data.py` and generalize `ratio_geometry_features()` in `features.py`, which currently writes the quadratic, pairwise, and triple terms explicitly. |
-| Different assay | No code change. Supply log₂ titers and censoring flags; set `ASSAY_FLOOR_TITER` to the detection limit. |
-| Different subtype or pathogen | Supply the matching structure and background FASTA, and replace `H3_EPITOPES`. The rest is sequence-agnostic. |
+| Different assay | No code change. Supply log₂ titers and the detection limit. |
+| Different subtype or pathogen | Supply the matching structure and background FASTA, and replace `H3_EPITOPES`. |
 
 ---
 
@@ -160,13 +160,11 @@ Configuration lives in `src/mpat/constants.py`.
 
 ```bash
 python -m mpat train --data data/MN_Titers_Data.csv \
-                     --virus_fasta data/Virus.fasta \
+                     --virus_fasta data/Virus_Sequence.fasta \
                      --gisaid_fasta data/Public_HA_Sequence_Data.fasta --pdb data/HA_structure_template.pdb \
                      --pretrained_encoder artefacts/encoder.pt \
                      --output_dir results --n_seeds 5 --cv all --seed 42
 ```
-
-Results are seed-dependent at the third decimal place.
 
 ## Citation
 ```bibtex
